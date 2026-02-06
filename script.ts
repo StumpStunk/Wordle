@@ -7,6 +7,7 @@ async function loadWords() {
     wordList = await response.json();
 
     randomWord = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
+    console.log(randomWord)
 }
 
 
@@ -14,8 +15,10 @@ loadWords();
 
 const boardElement = document.getElementById("board")
 const keyboardElement = document.getElementById("keyboard")
+const h1El = document.querySelector("h1")
 let currentRow = 0;
 let letter = 0;
+let gameOver = false
 
 if (keyboardElement) {
     for (let row = 0; row < 3; row++) {
@@ -73,6 +76,7 @@ let board: string[][] = [
     ['', '', '', '', '']];
 
 function clickLetter(letter: string) {
+    if (gameOver) return;
         for (let col = 0; col < 5; col++) {
             if (board[currentRow][col] === '') {
                 board[currentRow][col] = letter;
@@ -86,6 +90,7 @@ function clickLetter(letter: string) {
         }
 }
 function typeLetter(key: string) {
+    if (gameOver) return;
         for (let col = 0; col < 5; col++) {
             if (board[currentRow][col] === '') {
                 board[currentRow][col] = key;
@@ -122,6 +127,7 @@ document.addEventListener("keydown", event => {
 
 
 function enter() {
+    if (gameOver) return;
     let word: string = board[currentRow].join("");
     if (word.length < 5) return; 
     if (!wordList.includes(word.toLowerCase())) return;
@@ -167,6 +173,10 @@ function enter() {
     }
 
     currentRow++;
+    if (currentRow == 6) {
+        gameOver = true
+        h1El!.innerText = randomWord
+    }
 }
 
 function backspace() {
@@ -181,9 +191,12 @@ function backspace() {
         }
 }
 document.getElementById("reset")?.addEventListener("click", reset)
+
 function reset() {
     loadWords();
     currentRow = 0; 
+    gameOver = false
+    h1El!.innerText = "WORDLE"
     const rows = boardElement?.querySelectorAll('.row');
     rows?.forEach(row => {
         row.querySelectorAll('.cell').forEach(cell => {
@@ -191,5 +204,11 @@ function reset() {
             (cell as HTMLElement).style.backgroundColor = "";
         });
     });
+    const keyRows = keyboardElement?.querySelectorAll('.row')
+    keyRows?.forEach(row => {
+        row.querySelectorAll('.cell').forEach(cell => {
+            (cell as HTMLElement).style.backgroundColor = "";
+        })
+    })
     board = board.map(row => row.fill(""));
 }
