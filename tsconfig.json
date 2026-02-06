@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",      /* Endre fra ES5 til ES2020 eller nyere */
+      "lib": ["ES2020", "DOM"], /* Legg til DOM så den skjønner fetch og dokumenter */
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+      "strict": true,
+      "skipLibCheck": true
+    }
+  }
